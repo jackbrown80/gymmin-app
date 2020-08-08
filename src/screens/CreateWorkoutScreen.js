@@ -99,7 +99,7 @@ export default CreateWorkoutScreen = ({ navigation }) => {
 
       Keyboard.dismiss()
 
-      console.log(exercises);
+      console.log(exercises)
     }
   }
 

@@ -12,10 +12,8 @@ import WorkoutCard from '../components/WorkoutCard'
 import Logo from '../components/Logo'
 
 export default WorkoutsScreen = ({ navigation }) => {
-  
   return (
     <View style={styles.container}>
-      <Logo style={styles.logo}></Logo>
       <View style={styles.row}>
         <Text style={styles.title}>Workouts</Text>
         <TouchableOpacity onPress={() => navigation.navigate('CreateWorkout')}>
