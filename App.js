@@ -44,11 +44,9 @@ export default App = () => {
     <NavigationContainer>
       <Stack.Navigator>
         {user ? (
-          <Stack.Screen
-            name="Workouts"
-            component={Screens.WorkoutsScreen}
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="Workouts" options={{ headerShown: false }}>
+            {(props) => <Screens.WorkoutsScreen {...props} user={user} />}
+          </Stack.Screen>
         ) : (
           <>
             <Stack.Screen
@@ -70,10 +68,12 @@ export default App = () => {
             options={{ headerShown: false }}
           />
         ) : null} */}
-        <Stack.Screen
-          name="CreateWorkout"
-          component={Screens.CreateWorkoutScreen}
-        />
+        <Stack.Screen name="CreateWorkout">
+          {(props) => <Screens.CreateWorkoutScreen {...props} />}
+        </Stack.Screen>
+        <Stack.Screen name="RecordWorkout">
+          {(props) => <Screens.RecordWorkoutScreen {...props} />}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   )

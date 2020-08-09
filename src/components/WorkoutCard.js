@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Alert, TouchableOpacity } from 'react-native'
 import appStyles from '../styles'
 import { AntDesign } from '@expo/vector-icons'
 
-const WorkoutCard = ({ title }) => {
+const WorkoutCard = ({ title, navigation, workout }) => {
   return (
     <TouchableOpacity
       onLongPress={() =>
@@ -23,6 +23,7 @@ const WorkoutCard = ({ title }) => {
           ]
         )
       }
+      onPress={() => navigation.navigate('RecordWorkout', { workout })}
     >
       <View style={styles.container}>
         <View style={styles.leftWrapper}>

@@ -9,24 +9,41 @@ import {
   Keyboard,
   Alert,
   Button,
-  AsyncStorage,
 } from 'react-native'
 import HeaderBackButton from '@react-navigation/stack'
 import appStyles from '../styles'
 import { Ionicons } from '@expo/vector-icons'
+import { firebase } from '../firebase/config'
 import WorkoutCard from '../components/WorkoutCard'
 import ExerciseCard from '../components/ExerciseCard'
 
-export default CreateWorkoutScreen = ({ navigation }) => {
+export default CreateWorkoutScreen = ({ route, navigation }) => {
   const [exercises, setExercises] = React.useState([])
   const [exerciseName, setExerciseName] = React.useState('')
   const [sets, setSets] = React.useState('')
+  const [completeSets, setCompleteSets] = React.useState([])
+
+  const { user } = route.params
 
   let setsRef
   let exerciseRef
 
-  React.useLayoutEffect(() => {
-    const saveWorkout = (workoutName) => {}
+  const workoutRef = firebase
+    .firestore()
+    .collection(`/users/${user.id}/workouts`)
+
+  React.useEffect(() => {
+    navigation.setOptions({
+      title: 'Create Workout',
+      headerStyle: {
+        backgroundColor: appStyles.primaryColour,
+        elevation: 0,
+        shadowOpacity: 0,
+      },
+      headerTintColor: '#fff',
+      headerRight: () => <Button onPress={() => savePressed()} title="Save" />,
+    })
+
     const savePressed = () => {
       Alert.prompt(
         'Enter workout name',
@@ -38,23 +55,27 @@ export default CreateWorkoutScreen = ({ navigation }) => {
           },
           {
             text: 'Save',
-            onPress: (workoutName) => saveWorkout(workoutName),
+            onPress: (workoutName) => {
+              const timestamp = firebase.firestore.FieldValue.serverTimestamp()
+              const workout = {
+                name: workoutName,
+                exercises: exercises,
+                created: timestamp,
+              }
+              workoutRef
+                .add(workout)
+                .then((_doc) => {
+                  navigation.navigate('Workouts')
+                })
+                .catch((error) => {
+                  alert(error)
+                })
+            },
           },
         ]
       )
     }
-
-    navigation.setOptions({
-      title: '',
-      headerStyle: {
-        backgroundColor: appStyles.primaryColour,
-        elevation: 0,
-        shadowOpacity: 0,
-      },
-      headerTintColor: '#fff',
-      headerRight: () => <Button onPress={() => savePressed()} title="Save" />,
-    })
-  }, [navigation])
+  })
 
   const deleteExercise = (id) => {
     setExercises((prevExercises) => {
@@ -88,9 +109,26 @@ export default CreateWorkoutScreen = ({ navigation }) => {
         ]
       )
     } else {
+      const completeSets = {
+        sets: [],
+      }
+
+      for (let index = 0; index < sets; index++) {
+        const data = {
+          set: index + 1,
+          prevWeight: null,
+          reps: null,
+        }
+
+        completeSets.sets.push(data)
+      }
       setExercises((prevExercises) => {
         return [
-          { id: Date.now().toString(), name: exerciseName, sets: sets },
+          {
+            id: Date.now().toString(),
+            name: exerciseName,
+            sets: { count: sets, ...completeSets },
+          },
           ...prevExercises,
         ]
       })
@@ -98,14 +136,12 @@ export default CreateWorkoutScreen = ({ navigation }) => {
       setExerciseName('')
 
       Keyboard.dismiss()
-
-      console.log(exercises)
     }
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create Workout</Text>
+      {/* <Text style={styles.title}>Create Workout</Text> */}
       <View style={styles.row}>
         <TextInput
           style={styles.exerciseNameInput}
@@ -144,7 +180,7 @@ export default CreateWorkoutScreen = ({ navigation }) => {
           <ExerciseCard
             style={styles.exerciseCard}
             name={item.name}
-            sets={item.sets}
+            sets={item.sets.count}
             deleteExercise={deleteExercise}
             id={item.id}
           ></ExerciseCard>

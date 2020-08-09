@@ -3,26 +3,61 @@ import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   TouchableOpacity,
-  StatusBar,
+  FlatList,
 } from 'react-native'
 import appStyles from '../styles'
 import { Ionicons } from '@expo/vector-icons'
 import WorkoutCard from '../components/WorkoutCard'
+import { firebase } from '../firebase/config'
 import Logo from '../components/Logo'
 
-export default WorkoutsScreen = ({ navigation }) => {
+export default WorkoutsScreen = ({ user, navigation }) => {
+  const [workouts, setWorkouts] = React.useState([])
+
+  const workoutRef = firebase
+    .firestore()
+    .collection(`/users/${user.id}/workouts`)
+
+  React.useEffect(() => {
+    workoutRef.orderBy('created', 'desc').onSnapshot(
+      (querySnapshot) => {
+        const newWorkouts = []
+        querySnapshot.forEach((doc) => {
+          const workout = doc.data()
+          workout.id = doc.id
+          newWorkouts.push(workout)
+        })
+        setWorkouts(newWorkouts)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }, [])
+
   return (
     <View style={styles.container}>
       <View style={styles.row}>
         <Text style={styles.title}>Workouts</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('CreateWorkout')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('CreateWorkout', { user })}
+        >
           <Ionicons name="md-add-circle-outline" size={35} color="white" />
         </TouchableOpacity>
       </View>
-      <WorkoutCard title="Chest & Tris"></WorkoutCard>
-      <WorkoutCard title="Back & Bis"></WorkoutCard>
-      <WorkoutCard title="Legs"></WorkoutCard>
+      <FlatList
+        data={workouts}
+        renderItem={({ item }) => (
+          <WorkoutCard
+            title={item.name}
+            key={item.id}
+            navigation={navigation}
+            workout={item}
+          ></WorkoutCard>
+        )}
+      />
     </View>
   )
 }

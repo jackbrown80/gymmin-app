@@ -3,6 +3,7 @@ import WorkoutsScreen from './WorkoutsScreen'
 import CreateWorkoutScreen from './CreateWorkoutScreen'
 import SignUpScreen from './SignUpScreen'
 import SignInScreen from './SignInScreen'
+import RecordWorkoutScreen from './RecordWorkoutScreen'
 
 export default {
   WelcomeScreen,
@@ -10,4 +11,5 @@ export default {
   CreateWorkoutScreen,
   SignUpScreen,
   SignInScreen,
+  RecordWorkoutScreen,
 }
