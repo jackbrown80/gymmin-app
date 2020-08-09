@@ -10,6 +10,16 @@ import {
 import appStyles from '../styles'
 
 const RecordExerciseCard = ({ name, sets }) => {
+  const refObj = {}
+  const { sets: setsArr } = sets
+
+  setsArr.forEach((key) => {
+    refObj[`reps${key.set}`] = null
+    refObj[`weight${key.set}`] = null
+  })
+
+  console.log(refObj)
+
   return (
     <View style={styles.container}>
       <Text style={styles.exerciseName}>{name}</Text>
@@ -27,6 +37,9 @@ const RecordExerciseCard = ({ name, sets }) => {
               style={styles.reps}
               placeholder={!sets.reps ? 'NA' : sets.reps}
               keyboardType="number-pad"
+              ref={(ref) => {
+                refObj[`reps${set.set}`] = ref
+              }}
             ></TextInput>
             <TextInput
               style={styles.newWeight}

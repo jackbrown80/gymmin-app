@@ -181,6 +181,7 @@ export default CreateWorkoutScreen = ({ route, navigation }) => {
             style={styles.exerciseCard}
             name={item.name}
             sets={item.sets.count}
+            v
             deleteExercise={deleteExercise}
             id={item.id}
           ></ExerciseCard>
