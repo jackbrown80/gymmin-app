@@ -43,31 +43,19 @@ export default App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {user ? (
-          <Stack.Screen name="Workouts" options={{ headerShown: false }}>
-            {(props) => <Screens.WorkoutsScreen {...props} user={user} />}
-          </Stack.Screen>
-        ) : (
-          <>
-            <Stack.Screen
-              name="SignIn"
-              component={Screens.SignInScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SignUp"
-              component={Screens.SignUpScreen}
-              options={{ headerShown: false }}
-            />
-          </>
-        )}
-        {/* {showWelcome ? (
-          <Stack.Screen
-            name="Welcome"
-            component={Screens.WelcomeScreen}
-            options={{ headerShown: false }}
-          />
-        ) : null} */}
+        <Stack.Screen
+          name="SignIn"
+          component={Screens.SignInScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={Screens.SignUpScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="Workouts" options={{ headerShown: false }}>
+          {(props) => <Screens.WorkoutsScreen {...props} user={user} />}
+        </Stack.Screen>
         <Stack.Screen name="CreateWorkout">
           {(props) => <Screens.CreateWorkoutScreen {...props} />}
         </Stack.Screen>
