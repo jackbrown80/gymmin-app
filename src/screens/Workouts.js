@@ -3,55 +3,26 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   TouchableOpacity,
   FlatList
 } from 'react-native'
 import appStyles from '../styles'
 import { Ionicons } from '@expo/vector-icons'
 import WorkoutCard from '../components/WorkoutCard'
-import { firebase } from '../firebase/config'
-import Logo from '../components/Logo'
+import { withFirebaseHOC } from '../firebase'
 
-export default WorkoutsScreen = ({ user, navigation }) => {
+const Workouts = ({ firebase, user, navigation }) => {
   const [loading, setLoading] = React.useState(true)
   const [workouts, setWorkouts] = React.useState(null)
 
-  console.log('-----------3-------------')
-  console.log(workouts)
-
-  const workoutRef = firebase
-    .firestore()
-    .collection(`/users/${user.id}/workouts`)
-
-  const signOut = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        navigation.navigate('SignIn')
-      })
-      .catch((error) => {
-        alert(error)
-      })
-  }
-
   React.useEffect(() => {
-    workoutRef.orderBy('created', 'desc').onSnapshot(
-      (querySnapshot) => {
-        const newWorkouts = []
-        querySnapshot.forEach((doc) => {
-          const workout = doc.data()
-          workout.id = doc.id
-          newWorkouts.push(workout)
-        })
-        setWorkouts(newWorkouts)
+    firebase
+      .getWorkoutsByUid('GWGkNvlqjVOxgpMsPovcOhQt2lx1')
+      .then((response) => {
         setLoading(false)
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
+        setWorkouts(response)
+      })
+      .catch((error) => console.log(error))
   }, [])
 
   return (
@@ -84,6 +55,8 @@ export default WorkoutsScreen = ({ user, navigation }) => {
     </View>
   )
 }
+
+export default withFirebaseHOC(Workouts)
 
 const styles = StyleSheet.create({
   container: {

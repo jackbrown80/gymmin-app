@@ -17,7 +17,7 @@ import { firebase } from '../firebase/config'
 import WorkoutCard from '../components/WorkoutCard'
 import ExerciseCard from '../components/ExerciseCard'
 
-export default CreateWorkoutScreen = ({ route, navigation }) => {
+export default CreateWorkout = ({ route, navigation }) => {
   const [exercises, setExercises] = React.useState([])
   const [exerciseName, setExerciseName] = React.useState('')
   const [sets, setSets] = React.useState('')
@@ -56,7 +56,7 @@ export default CreateWorkoutScreen = ({ route, navigation }) => {
           {
             text: 'Save',
             onPress: (workoutName) => {
-              const timestamp = firebase.firestore.FieldValue.serverTimestamp()
+              // const timestamp = firebase.firestore.FieldValue.serverTimestamp()
               const workout = {
                 name: workoutName,
                 exercises: exercises,

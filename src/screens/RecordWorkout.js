@@ -18,7 +18,7 @@ import { firebase } from '../firebase/config'
 import WorkoutCard from '../components/WorkoutCard'
 import RecordExerciseCard from '../components/RecordExerciseCard'
 
-export default RecordWorkoutScreen = ({ user, navigation, route }) => {
+export default RecordWorkout = ({ user, navigation, route }) => {
   const { workout } = route.params
   const { exercises } = workout
   const [newExercises, setNewExercises] = React.useState(exercises)

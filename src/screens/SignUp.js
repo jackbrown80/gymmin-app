@@ -6,24 +6,13 @@ import {
   View,
   TouchableOpacity,
   TextInput,
-  FlatList,
-  Keyboard,
-  Alert,
-  Button,
-  AsyncStorage,
-  Image,
-  Vibration,
 } from 'react-native'
-import HeaderBackButton from '@react-navigation/stack'
 import appStyles from '../styles'
-import { Ionicons } from '@expo/vector-icons'
-import WorkoutCard from '../components/WorkoutCard'
-import ExerciseCard from '../components/ExerciseCard'
 import Logo from '../components/Logo'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { apps } from 'firebase'
+import { withFirebaseHOC } from '../firebase'
 
-export default SignInScreen = ({ navigation }) => {
+const SignUp = ({ firebase, navigation }) => {
   const [firstName, setFirstName] = React.useState('')
   const [lastName, setLastName] = React.useState('')
 
@@ -32,34 +21,33 @@ export default SignInScreen = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = React.useState('')
 
   const onFooterLinkPress = () => {
-    navigation.navigate('SignUp')
+    navigation.navigate('SignIn')
   }
 
-  const onSignInPress = () => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((response) => {
-        const uid = response.user.uid
-        const usersRef = firebase.firestore().collection('users')
-        usersRef
-          .doc(uid)
-          .get()
-          .then((firestoreDocument) => {
-            if (!firestoreDocument.exists) {
-              alert('User does not exist anymore.')
-              return
-            }
-            const user = firestoreDocument.data()
-            navigation.navigate('Workouts', { user })
-          })
-          .catch((error) => {
-            alert(error)
-          })
-      })
-      .catch((error) => {
-        alert(error)
-      })
+  const onSignUpPress = async () => {
+    if (password !== confirmPassword) {
+      alert("Passwords don't match.")
+      return
+    }
+    try {
+      const response = await firebase.signUpWithEmail(
+        email,
+        password
+      )
+
+      if (response.user.uid) {
+        const { uid } = response.user
+        const userData = { email, firstName, lastName, uid }
+        await firebase.createNewUser(userData)
+        navigation.navigate('Workouts')
+      }
+    } catch (error) {
+      console.error(error)
+      // actions.setFieldError('general', error.message)
+    } finally {
+      // actions.setSubmitting(false)
+    }
+
   }
 
   return (
@@ -74,7 +62,25 @@ export default SignInScreen = ({ navigation }) => {
           Making sure you are always making progress!
         </Text>
         <View style={styles.formWrapper}>
-          <Text style={styles.title}>Sign In</Text>
+          <Text style={styles.title}>Sign Up</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            placeholderTextColor="#aaaaaa"
+            onChangeText={(text) => setFirstName(text)}
+            value={firstName}
+            autoCapitalize="words"
+            autoCompleteType="name"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            placeholderTextColor="#aaaaaa"
+            onChangeText={(text) => setLastName(text)}
+            value={lastName}
+            autoCapitalize="words"
+            autoCompleteType="name"
+          />
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -83,6 +89,8 @@ export default SignInScreen = ({ navigation }) => {
             value={email}
             underlineColorAndroid="transparent"
             autoCapitalize="none"
+            autoCompleteType="email"
+            keyboardType="email-address"
           />
           <TextInput
             style={styles.input}
@@ -92,32 +100,29 @@ export default SignInScreen = ({ navigation }) => {
             value={password}
             underlineColorAndroid="transparent"
             autoCapitalize="none"
+            secureTextEntry
+          />
+          <TextInput
+            style={styles.input}
+            placeholderTextColor="#aaaaaa"
+            placeholder="Confirm Password"
+            onChangeText={(text) => setConfirmPassword(text)}
+            value={confirmPassword}
+            autoCapitalize="none"
+            secureTextEntry
           />
           <TouchableOpacity
             style={styles.button}
-            onPress={() => onSignInPress()}
+            onPress={() => onSignUpPress()}
           >
-            <Text style={styles.buttonTitle}>Let's Go!</Text>
-          </TouchableOpacity>
-          <Text style={styles.or}>OR</Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => onRegisterPress()}
-          >
-            <Text style={styles.buttonTitle}>Continue with Facebook</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => onRegisterPress()}
-          >
-            <Text style={styles.buttonTitle}>Continue with Apple</Text>
+            <Text style={styles.buttonTitle}>Create account</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.footerView}>
           <Text style={styles.footerText}>
-            Don't have an account?{' '}
+            Already have an account?{' '}
             <Text onPress={onFooterLinkPress} style={styles.footerLink}>
-              Sign up
+              Sign in
             </Text>
           </Text>
         </View>
@@ -125,6 +130,8 @@ export default SignInScreen = ({ navigation }) => {
     </View>
   )
 }
+
+export default withFirebaseHOC(SignUp)
 
 const styles = StyleSheet.create({
   container: {
@@ -152,11 +159,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     marginBottom: 15,
-  },
-  or: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginTop: 20,
   },
   logo: {
     flex: 1,
