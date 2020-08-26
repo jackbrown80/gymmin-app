@@ -17,12 +17,12 @@ const Firebase = {
   signOut: () => {
     return firebase.auth().signOut()
   },
-  checkUserAuth: user => {
+  checkUserAuth: (user) => {
     return firebase.auth().onAuthStateChanged(user)
   },
 
   // firestore
-  createNewUser: userData => {
+  createNewUser: (userData) => {
     return firebase
       .firestore()
       .collection('users')
@@ -30,13 +30,17 @@ const Firebase = {
       .set(userData)
   },
 
-  getWorkoutsByUid: async (uid) => {
-    const ref = firebase.firestore().collection('users').doc(uid).collection('workouts')
-    const snapshot = await ref.get();
+  getWorkouts: async (uid) => {
+    const ref = firebase
+      .firestore()
+      .collection('users')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('workouts')
+    const snapshot = await ref.get()
     const workouts = []
 
-    snapshot.forEach(doc => {
-      workouts.push({id: doc.id, ...doc.data()})
+    snapshot.forEach((doc) => {
+      workouts.push({ id: doc.id, ...doc.data() })
     })
 
     return workouts

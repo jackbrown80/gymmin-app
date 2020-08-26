@@ -4,6 +4,7 @@ import appStyles from '../styles'
 import { AntDesign } from '@expo/vector-icons'
 
 const WorkoutCard = ({ title, navigation, workout }) => {
+  const exerciseId = workout.id
   return (
     <TouchableOpacity
       onLongPress={() =>
@@ -13,17 +14,19 @@ const WorkoutCard = ({ title, navigation, workout }) => {
           [
             {
               text: 'Cancel',
-              style: 'cancel',
+              style: 'cancel'
             },
             {
               text: 'Delete',
               onPress: () => console.log('OK Pressed'),
-              style: 'destructive',
-            },
+              style: 'destructive'
+            }
           ]
         )
       }
-      onPress={() => navigation.navigate('RecordWorkout', { workout })}
+      onPress={() => {
+        navigation.navigate('RecordWorkout', { workout })
+      }}
     >
       <View style={styles.container}>
         <View style={styles.leftWrapper}>
@@ -50,26 +53,26 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 6,
+      height: 6
     },
     shadowOpacity: 0.37,
     shadowRadius: 7.49,
     elevation: 12,
-    paddingHorizontal: 15,
+    paddingHorizontal: 15
   },
   title: {
     fontSize: 30,
     fontWeight: '700',
-    marginBottom: 5,
+    marginBottom: 5
   },
   subtitle: {
     fontSize: 20,
     fontWeight: 'normal',
-    color: '#333333',
+    color: '#333333'
   },
   rightWrapper: {
-    marginRight: 20,
-  },
+    marginRight: 20
+  }
 })
 
 export default WorkoutCard

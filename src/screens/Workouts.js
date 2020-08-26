@@ -17,13 +17,18 @@ const Workouts = ({ firebase, user, navigation }) => {
 
   React.useEffect(() => {
     firebase
-      .getWorkoutsByUid('GWGkNvlqjVOxgpMsPovcOhQt2lx1')
+      .getWorkouts('GWGkNvlqjVOxgpMsPovcOhQt2lx1')
       .then((response) => {
         setLoading(false)
         setWorkouts(response)
       })
       .catch((error) => console.log(error))
   }, [])
+
+  const signOut = () => {
+    firebase.signOut()
+    navigation.navigate('Auth')
+  }
 
   return (
     <View style={styles.container}>
@@ -42,7 +47,6 @@ const Workouts = ({ firebase, user, navigation }) => {
           renderItem={({ item }) => (
             <WorkoutCard
               title={item.name}
-              key={item.id}
               navigation={navigation}
               workout={item}
             ></WorkoutCard>
