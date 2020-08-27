@@ -9,42 +9,38 @@ import {
   TextInput
 } from 'react-native'
 import appStyles from '../styles'
+import { withFirebaseHOC } from '../firebase'
 
-const RecordExerciseCard = ({
-  name,
-  sets,
-  index,
-  setNewExercises,
-  exercises
-}) => {
+const RecordExerciseCard = ({ name, firebase, exerciseId, workoutId }) => {
   const refObj = {}
-  const { sets: setsArr } = sets
-  const [newSetsArr, setNewSetsArr] = React.useState(setsArr)
-  console.log('-----------2-------------')
-  console.log(sets)
-
-  setsArr.forEach((key) => {
-    refObj[`reps${key.set}`] = null
-    refObj[`weight${key.set}`] = null
-  })
-
-  const recordValue = (value, set, name) => {
-    const i = set - 1
-    let prevNewSetsArr = [...newSetsArr]
-    prevNewSetsArr[i][name] = value
-    setNewSetsArr(prevNewSetsArr)
-  }
+  const [loading, setLoading] = React.useState(true)
+  const [sets, setSets] = React.useState()
 
   React.useEffect(() => {
-    if (exercises) {
-      let prevExercises = [...exercises]
-      // console.log('here------------------------')
-      // console.log(index)
-      // console.log(prevExercises)
-      // prevExercises[index].sets = newSetsArr
-      // setNewExercises(prevExercises)
+    firebase
+      .getSetsByWorkoutIdAndExerciseId(workoutId, exerciseId)
+      .then((response) => {
+        setLoading(false)
+        setSets(response)
+      })
+      .catch((error) => console.log(error))
+  }, [])
+
+  React.useEffect(() => {
+    if (sets) {
+      sets.forEach((key) => {
+        refObj[`reps${key.set}`] = null
+        refObj[`weight${key.set}`] = null
+      })
     }
-  })
+  }, [sets])
+
+  // const recordValue = (value, set, name) => {
+  //   const i = set - 1
+  //   let prevNewSetsArr = [...newSetsArr]
+  //   prevNewSetsArr[i][name] = value
+  //   setNewSetsArr(prevNewSetsArr)
+  // }
 
   return (
     <View style={styles.container}>
@@ -54,17 +50,17 @@ const RecordExerciseCard = ({
         <Text style={styles.header}>Reps</Text>
         <Text style={styles.header2}>Weight</Text>
       </View>
-      {setsArr && (
+      {sets && (
         <FlatList
-          data={setsArr}
+          data={sets}
           renderItem={({ item }) => (
             <View key={item.set} style={styles.setContainer}>
               <View style={styles.divider}></View>
               <View style={styles.setRow}>
-                <Text style={styles.setIndex}>{item.set}</Text>
+                <Text style={styles.setIndex}>{item.setIndex}</Text>
                 <TextInput
                   style={styles.reps}
-                  placeholder={!sets.reps ? 'NA' : sets.reps}
+                  placeholder={String(item.reps)}
                   keyboardType="number-pad"
                   ref={(ref) => {
                     refObj[`reps${item.set}`] = ref
@@ -73,7 +69,7 @@ const RecordExerciseCard = ({
                 ></TextInput>
                 <TextInput
                   style={styles.newWeight}
-                  placeholder={!sets.prevWeight ? 'NA' : sets.prevWeight}
+                  placeholder={String(item.prevWeight)}
                   onChangeText={(value) =>
                     recordValue(value, item.set, 'prevWeight')
                   }
@@ -86,6 +82,8 @@ const RecordExerciseCard = ({
     </View>
   )
 }
+
+export default withFirebaseHOC(RecordExerciseCard)
 
 const styles = StyleSheet.create({
   container: {
@@ -145,5 +143,3 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   }
 })
-
-export default RecordExerciseCard

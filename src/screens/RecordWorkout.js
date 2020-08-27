@@ -17,30 +17,30 @@ import { Ionicons } from '@expo/vector-icons'
 import { firebase } from '../firebase/config'
 import WorkoutCard from '../components/WorkoutCard'
 import RecordExerciseCard from '../components/RecordExerciseCard'
+import { withFirebaseHOC } from '../firebase'
 
-export default RecordWorkout = ({ user, navigation, route }) => {
-  const { workout } = {}
-  const { exercises } = workout
+const RecordWorkout = ({ firebase, navigation }) => {
+  const { workoutId } = navigation.state.params
+
+  const [loading, setLoading] = React.useState(true)
+  const [exercises, setExercises] = React.useState(exercises)
   const [newExercises, setNewExercises] = React.useState(exercises)
 
   React.useEffect(() => {
-    navigation.setOptions({
-      title: 'Record Workout',
-      headerStyle: {
-        backgroundColor: appStyles.primaryColour,
-        elevation: 0,
-        shadowOpacity: 0
-      },
-      headerTintColor: '#fff',
-      headerRight: () => <Button onPress={() => savePressed()} title="Save" />
-    })
-  })
+    firebase
+      .getExercisesByWorkoutId(workoutId)
+      .then((response) => {
+        setLoading(false)
+        setExercises(response)
+      })
+      .catch((error) => console.log(error))
+  }, [])
 
   let index = 0
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{workout.name}</Text>
+      <Text style={styles.title}>Test</Text>
       {exercises ? (
         <FlatList
           data={exercises}
@@ -48,12 +48,9 @@ export default RecordWorkout = ({ user, navigation, route }) => {
             return (
               <RecordExerciseCard
                 key={item.id}
-                id={item.id}
-                index={index++}
+                workoutId={workoutId}
+                exerciseId={item.id}
                 name={item.name}
-                sets={item.sets}
-                exercises={exercises}
-                setNewExercises={setNewExercises}
               ></RecordExerciseCard>
             )
           }}
@@ -61,25 +58,11 @@ export default RecordWorkout = ({ user, navigation, route }) => {
       ) : (
         <Text>Loading...</Text>
       )}
-      <FlatList
-        data={exercises}
-        renderItem={({ item }) => {
-          return (
-            <RecordExerciseCard
-              key={item.id}
-              id={item.id}
-              index={index++}
-              name={item.name}
-              sets={item.sets}
-              exercises={exercises}
-              setNewExercises={setNewExercises}
-            ></RecordExerciseCard>
-          )
-        }}
-      />
     </View>
   )
 }
+
+export default withFirebaseHOC(RecordWorkout)
 
 const styles = StyleSheet.create({
   container: {

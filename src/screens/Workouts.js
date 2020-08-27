@@ -17,8 +17,9 @@ const Workouts = ({ firebase, user, navigation }) => {
 
   React.useEffect(() => {
     firebase
-      .getWorkouts('GWGkNvlqjVOxgpMsPovcOhQt2lx1')
+      .getWorkouts()
       .then((response) => {
+        console.log(response)
         setLoading(false)
         setWorkouts(response)
       })
@@ -48,7 +49,7 @@ const Workouts = ({ firebase, user, navigation }) => {
             <WorkoutCard
               title={item.name}
               navigation={navigation}
-              workout={item}
+              workoutId={item.id}
             ></WorkoutCard>
           )}
         />

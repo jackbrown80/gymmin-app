@@ -30,7 +30,7 @@ const Firebase = {
       .set(userData)
   },
 
-  getWorkouts: async (uid) => {
+  getWorkouts: async () => {
     const ref = firebase
       .firestore()
       .collection('users')
@@ -44,6 +44,44 @@ const Firebase = {
     })
 
     return workouts
+  },
+
+  getExercisesByWorkoutId: async (id) => {
+    const ref = firebase
+      .firestore()
+      .collection('users')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('workouts')
+      .doc(id)
+      .collection('exercises')
+    const snapshot = await ref.get()
+    const exercises = []
+
+    snapshot.forEach((doc) => {
+      exercises.push({ id: doc.id, ...doc.data() })
+    })
+
+    return exercises
+  },
+
+  getSetsByWorkoutIdAndExerciseId: async (workoutId, exerciseId) => {
+    const ref = firebase
+      .firestore()
+      .collection('users')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('workouts')
+      .doc(workoutId)
+      .collection('exercises')
+      .doc(exerciseId)
+      .collection('setDetails')
+    const snapshot = await ref.get()
+    const sets = []
+
+    snapshot.forEach((doc) => {
+      sets.push({ id: doc.id, ...doc.data() })
+    })
+
+    return sets
   }
 }
 

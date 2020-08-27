@@ -9,6 +9,7 @@ const AuthNavigation = createStackNavigator(
   },
   {
     initialRouteName: 'SignIn',
+    headerMode: 'none'
   }
 )
 

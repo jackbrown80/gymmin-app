@@ -8,7 +8,7 @@ import {
   FlatList,
   Keyboard,
   Alert,
-  Button,
+  Button
 } from 'react-native'
 import HeaderBackButton from '@react-navigation/stack'
 import appStyles from '../styles'
@@ -16,66 +16,61 @@ import { Ionicons } from '@expo/vector-icons'
 import { firebase } from '../firebase/config'
 import WorkoutCard from '../components/WorkoutCard'
 import ExerciseCard from '../components/ExerciseCard'
+import { withFirebaseHOC } from '../firebase'
 
-export default CreateWorkout = ({ route, navigation }) => {
+const CreateWorkout = ({ navigation }) => {
   const [exercises, setExercises] = React.useState([])
   const [exerciseName, setExerciseName] = React.useState('')
   const [sets, setSets] = React.useState('')
   const [completeSets, setCompleteSets] = React.useState([])
 
-  const { user } = route.params
-
   let setsRef
   let exerciseRef
 
-  const workoutRef = firebase
-    .firestore()
-    .collection(`/users/${user.id}/workouts`)
+  // React.useEffect(() => {
+  //   navigation.setOptions({
+  //     title: 'Create Workout',
+  //     headerStyle: {
+  //       backgroundColor: appStyles.primaryColour,
+  //       elevation: 0,
+  //       shadowOpacity: 0
+  //     },
+  //     headerTintColor: '#fff',
+  //     headerRight: () => <Button onPress={() => savePressed()} title="Save" />
+  //   })
+  // })
 
-  React.useEffect(() => {
-    navigation.setOptions({
-      title: 'Create Workout',
-      headerStyle: {
-        backgroundColor: appStyles.primaryColour,
-        elevation: 0,
-        shadowOpacity: 0,
-      },
-      headerTintColor: '#fff',
-      headerRight: () => <Button onPress={() => savePressed()} title="Save" />,
-    })
-
-    const savePressed = () => {
-      Alert.prompt(
-        'Enter workout name',
-        `For example, "Chest & Triceps" or "Back & Biceps"`,
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'Save',
-            onPress: (workoutName) => {
-              // const timestamp = firebase.firestore.FieldValue.serverTimestamp()
-              const workout = {
-                name: workoutName,
-                exercises: exercises,
-                created: timestamp,
-              }
-              workoutRef
-                .add(workout)
-                .then((_doc) => {
-                  navigation.navigate('Workouts')
-                })
-                .catch((error) => {
-                  alert(error)
-                })
-            },
-          },
-        ]
-      )
-    }
-  })
+  const savePressed = () => {
+    Alert.prompt(
+      'Enter workout name',
+      `For example, "Chest & Triceps" or "Back & Biceps"`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Save',
+          onPress: (workoutName) => {
+            // const timestamp = firebase.firestore.FieldValue.serverTimestamp()
+            const workout = {
+              name: workoutName,
+              exercises: exercises,
+              created: timestamp
+            }
+            workoutRef
+              .add(workout)
+              .then((_doc) => {
+                navigation.navigate('Workouts')
+              })
+              .catch((error) => {
+                alert(error)
+              })
+          }
+        }
+      ]
+    )
+  }
 
   const deleteExercise = (id) => {
     setExercises((prevExercises) => {
@@ -104,20 +99,20 @@ export default CreateWorkout = ({ route, navigation }) => {
         [
           {
             text: 'Ok',
-            style: 'normal',
-          },
+            style: 'normal'
+          }
         ]
       )
     } else {
       const completeSets = {
-        sets: [],
+        sets: []
       }
 
       for (let index = 0; index < sets; index++) {
         const data = {
           set: index + 1,
           prevWeight: null,
-          reps: null,
+          reps: null
         }
 
         completeSets.sets.push(data)
@@ -127,9 +122,9 @@ export default CreateWorkout = ({ route, navigation }) => {
           {
             id: Date.now().toString(),
             name: exerciseName,
-            sets: { count: sets, ...completeSets },
+            sets: { count: sets, ...completeSets }
           },
-          ...prevExercises,
+          ...prevExercises
         ]
       })
       setSets('')
@@ -191,29 +186,31 @@ export default CreateWorkout = ({ route, navigation }) => {
   )
 }
 
+export default withFirebaseHOC(CreateWorkout)
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: appStyles.primaryColour,
-    paddingHorizontal: 16,
+    paddingHorizontal: 16
   },
   title: {
     fontSize: 30,
     fontWeight: '600',
     color: appStyles.secondaryColour,
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 20
   },
   subtitle: {
     fontSize: 30,
     fontWeight: '600',
     color: appStyles.secondaryColour,
     marginTop: 20,
-    marginBottom: 10,
+    marginBottom: 10
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   exerciseNameInput: {
     height: 40,
@@ -221,7 +218,7 @@ const styles = StyleSheet.create({
     width: '75%',
     borderRadius: 5,
     fontSize: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 10
   },
   setsInput: {
     height: 40,
@@ -230,7 +227,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 20
   },
   addButton: {
     marginTop: 10,
@@ -240,22 +237,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'stretch',
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   buttonText: {
     textAlign: 'center',
     fontSize: 23,
     fontWeight: '700',
-    marginLeft: 10,
+    marginLeft: 10
   },
   exerciseNameLabel: {
     width: '75%',
     color: 'white',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '600'
   },
   setsLabel: { width: '20%', color: 'white', fontSize: 18, fontWeight: '600' },
   exerciseCard: {
-    marginBottom: 15,
-  },
+    marginBottom: 15
+  }
 })
