@@ -18,7 +18,7 @@ const Initial = ({ firebase, navigation }) => {
         }
       })
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }, [])
 

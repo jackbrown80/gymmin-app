@@ -5,13 +5,29 @@ import CreateWorkout from '../screens/CreateWorkout'
 
 const AppNavigation = createStackNavigator(
   {
-    Workouts: { screen: Workouts },
-    RecordWorkout: { screen: RecordWorkout },
-    CreateWorkout: { screen: CreateWorkout }
+    Workouts: {
+      screen: Workouts,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    RecordWorkout: {
+      screen: RecordWorkout,
+      navigationOptions: {
+        title: 'Record Workout',
+        headerBackTitle: 'Cancel',
+        headerRightTitle: 'Cancel',
+        gestureEnabled: false
+      }
+    },
+    CreateWorkout: {
+      screen: CreateWorkout,
+      navigationOptions: { title: 'Create Workout' }
+    }
   },
   {
     initialRouteName: 'Workouts',
-    headerMode: 'none'
+    headerMode: 'float'
   }
 )
 

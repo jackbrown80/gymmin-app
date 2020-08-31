@@ -4,14 +4,14 @@ import {
   Text,
   View,
   TouchableOpacity,
-  TextInput,
+  TextInput
 } from 'react-native'
 import appStyles from '../styles'
 import Logo from '../components/Logo'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { withFirebaseHOC } from '../firebase'
 
-const SignIn = ({firebase, navigation}) => {
+const SignIn = ({ firebase, navigation }) => {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
 
@@ -27,7 +27,7 @@ const SignIn = ({firebase, navigation}) => {
         navigation.navigate('App')
       }
     } catch (error) {
-      console.log(error);
+      console.error(error)
     } finally {
       // actions.setSubmitting(false)
     }
@@ -102,37 +102,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     paddingHorizontal: 30,
-    paddingTop: 30,
+    paddingTop: 30
   },
   tagline: {
     color: 'white',
     fontSize: 20,
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 30
   },
   formWrapper: {
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#f7f7f7',
     borderRadius: 15,
-    paddingVertical: 20,
+    paddingVertical: 20
   },
   title: {
     fontSize: 20,
     fontWeight: '600',
-    marginBottom: 15,
+    marginBottom: 15
   },
   or: {
     fontSize: 20,
     fontWeight: '600',
-    marginTop: 20,
+    marginTop: 20
   },
   logo: {
     flex: 1,
     height: 120,
     width: 90,
     alignSelf: 'center',
-    margin: 30,
+    margin: 30
   },
   input: {
     height: 48,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     marginRight: 30,
     paddingLeft: 16,
-    alignSelf: 'stretch',
+    alignSelf: 'stretch'
   },
   button: {
     backgroundColor: appStyles.ctaColour,
@@ -155,25 +155,25 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    alignSelf: 'stretch',
+    alignSelf: 'stretch'
   },
   buttonTitle: {
     color: 'black',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   footerView: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 20
   },
   footerText: {
     fontSize: 16,
-    color: 'white',
+    color: 'white'
   },
   footerLink: {
     color: appStyles.ctaColour,
     fontWeight: 'bold',
-    fontSize: 16,
-  },
+    fontSize: 16
+  }
 })

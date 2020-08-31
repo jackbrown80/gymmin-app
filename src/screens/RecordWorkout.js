@@ -23,8 +23,8 @@ const RecordWorkout = ({ firebase, navigation }) => {
   const { workoutId } = navigation.state.params
 
   const [loading, setLoading] = React.useState(true)
-  const [exercises, setExercises] = React.useState(exercises)
-  const [newExercises, setNewExercises] = React.useState(exercises)
+  const [exercises, setExercises] = React.useState(null)
+  const [recordedSets, setRecordedSets] = React.useState({})
 
   React.useEffect(() => {
     firebase
@@ -33,10 +33,12 @@ const RecordWorkout = ({ firebase, navigation }) => {
         setLoading(false)
         setExercises(response)
       })
-      .catch((error) => console.log(error))
+      .catch((error) => console.error(error))
   }, [])
 
-  let index = 0
+  React.useEffect(() => {
+    console.log(recordedSets)
+  }, [recordedSets])
 
   return (
     <View style={styles.container}>
@@ -51,6 +53,8 @@ const RecordWorkout = ({ firebase, navigation }) => {
                 workoutId={workoutId}
                 exerciseId={item.id}
                 name={item.name}
+                setRecordedSets={setRecordedSets}
+                recordedSets={recordedSets}
               ></RecordExerciseCard>
             )
           }}

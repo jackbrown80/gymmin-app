@@ -8,7 +8,8 @@ import {
   FlatList,
   Keyboard,
   Alert,
-  Button
+  Button,
+  SafeAreaView
 } from 'react-native'
 import HeaderBackButton from '@react-navigation/stack'
 import appStyles from '../styles'
@@ -27,18 +28,7 @@ const CreateWorkout = ({ navigation }) => {
   let setsRef
   let exerciseRef
 
-  // React.useEffect(() => {
-  //   navigation.setOptions({
-  //     title: 'Create Workout',
-  //     headerStyle: {
-  //       backgroundColor: appStyles.primaryColour,
-  //       elevation: 0,
-  //       shadowOpacity: 0
-  //     },
-  //     headerTintColor: '#fff',
-  //     headerRight: () => <Button onPress={() => savePressed()} title="Save" />
-  //   })
-  // })
+  console.log('nav:', navigation)
 
   const savePressed = () => {
     Alert.prompt(
@@ -136,7 +126,6 @@ const CreateWorkout = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Create Workout</Text> */}
       <View style={styles.row}>
         <TextInput
           style={styles.exerciseNameInput}

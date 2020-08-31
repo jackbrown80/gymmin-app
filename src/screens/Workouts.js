@@ -19,11 +19,10 @@ const Workouts = ({ firebase, user, navigation }) => {
     firebase
       .getWorkouts()
       .then((response) => {
-        console.log(response)
         setLoading(false)
         setWorkouts(response)
       })
-      .catch((error) => console.log(error))
+      .catch((error) => console.error(error))
   }, [])
 
   const signOut = () => {
