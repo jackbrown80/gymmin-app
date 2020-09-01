@@ -12,13 +12,13 @@ const ExerciseCard = ({ name, sets, deleteExercise, id }) => {
           [
             {
               text: 'Cancel',
-              style: 'cancel',
+              style: 'cancel'
             },
             {
               text: 'Delete',
               onPress: () => deleteExercise(id),
-              style: 'destructive',
-            },
+              style: 'destructive'
+            }
           ]
         )
       }
@@ -37,39 +37,39 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: appStyles.secondaryColour,
+    backgroundColor: appStyles.tertiaryColour,
     borderRadius: 10,
     height: 70,
     shadowColor: '#000',
     marginBottom: 20,
     shadowOffset: {
       width: 0,
-      height: 6,
+      height: 6
     },
     shadowOpacity: 0.37,
     shadowRadius: 7.49,
     elevation: 12,
-    paddingHorizontal: 15,
+    paddingHorizontal: 15
   },
   exerciseName: {
     width: '80%',
     fontSize: 20,
     fontWeight: '500',
-    color: '#333333',
+    color: '#333333'
   },
   sets: {
     width: '20%',
     fontSize: 20,
     fontWeight: '500',
     color: '#333333',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   border: {
     borderWidth: 1,
     height: '60%',
     borderRadius: 20,
-    borderColor: '#e8e8e8',
-  },
+    borderColor: '#e8e8e8'
+  }
 })
 
 export default ExerciseCard

@@ -28,7 +28,7 @@ const WorkoutCard = ({ title, navigation, workoutId }) => {
       }}
     >
       <View style={styles.container}>
-        <View style={styles.leftWrapper}>
+        <View>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>Not yet started</Text>
         </View>
@@ -46,26 +46,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 25,
-    backgroundColor: appStyles.secondaryColour,
+    backgroundColor: appStyles.tertiaryColour,
     borderRadius: 10,
-    height: 100,
+    height: appStyles.cardHeight,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 6
+      height: 0
     },
-    shadowOpacity: 0.37,
-    shadowRadius: 7.49,
-    elevation: 12,
-    paddingHorizontal: 15
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 1,
+    paddingHorizontal: appStyles.cardTitlePadding
   },
   title: {
-    fontSize: 30,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: '600',
     marginBottom: 5
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'normal',
     color: '#333333'
   },

@@ -186,14 +186,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: '600',
-    color: appStyles.secondaryColour,
+    color: appStyles.tertiaryColour,
     marginTop: 10,
     marginBottom: 20
   },
   subtitle: {
     fontSize: 30,
     fontWeight: '600',
-    color: appStyles.secondaryColour,
+    color: appStyles.tertiaryColour,
     marginTop: 20,
     marginBottom: 10
   },

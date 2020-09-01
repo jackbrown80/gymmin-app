@@ -81,7 +81,7 @@ export default withFirebaseHOC(RecordExerciseCard)
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: appStyles.secondaryColour,
+    backgroundColor: appStyles.tertiaryColour,
     borderRadius: 10,
     shadowColor: '#000',
     marginBottom: 20,

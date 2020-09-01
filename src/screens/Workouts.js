@@ -4,12 +4,15 @@ import {
   Text,
   View,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  SafeAreaView
 } from 'react-native'
 import appStyles from '../styles'
 import { Ionicons } from '@expo/vector-icons'
 import WorkoutCard from '../components/WorkoutCard'
 import { withFirebaseHOC } from '../firebase'
+import WorkoutHeader from '../components/WorkoutHeader'
+import BlueAddButton from '../components/BlueAddButton'
 
 const Workouts = ({ firebase, user, navigation }) => {
   const [loading, setLoading] = React.useState(true)
@@ -32,18 +35,15 @@ const Workouts = ({ firebase, user, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <WorkoutHeader></WorkoutHeader>
       <View style={styles.row}>
         <Text style={styles.title}>Workouts</Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('CreateWorkout', { user })}
-        >
-          <Ionicons name="md-add-circle-outline" size={35} color="white" />
-        </TouchableOpacity>
       </View>
       {loading && <Text>Loading...</Text>}
       {workouts && (
         <FlatList
           data={workouts}
+          style={styles.list}
           renderItem={({ item }) => (
             <WorkoutCard
               title={item.name}
@@ -53,9 +53,10 @@ const Workouts = ({ firebase, user, navigation }) => {
           )}
         />
       )}
-      <TouchableOpacity style={styles.addButton} onPress={() => signOut()}>
-        <Text style={styles.buttonText}>Sign Out</Text>
-      </TouchableOpacity>
+      <BlueAddButton
+        style={styles.add}
+        onPress={() => navigation.navigate('CreateWorkout', { user })}
+      ></BlueAddButton>
     </View>
   )
 }
@@ -65,33 +66,23 @@ export default withFirebaseHOC(Workouts)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: appStyles.primaryColour,
-    paddingTop: 44,
-    paddingHorizontal: 16
+    backgroundColor: appStyles.secondaryColour
   },
   title: {
-    fontSize: 35,
-    fontWeight: '600',
-    color: appStyles.secondaryColour
+    fontSize: 22,
+    fontWeight: '700',
+    color: appStyles.primaryColour,
+    paddingLeft: appStyles.leftHeaderPadding
   },
   row: {
     marginTop: 25,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
-  logo: {
-    alignSelf: 'center',
-    marginTop: 25,
-    width: '10%'
+  add: {
+    alignSelf: 'center'
   },
-  addButton: {
-    marginTop: 10,
-    backgroundColor: appStyles.ctaColour,
-    borderRadius: 5,
-    height: 40,
-    justifyContent: 'center',
-    alignSelf: 'stretch',
-    flexDirection: 'row',
-    alignItems: 'center'
+  list: {
+    paddingHorizontal: appStyles.cardPadding
   }
 })
