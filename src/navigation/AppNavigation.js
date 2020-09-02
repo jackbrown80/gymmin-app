@@ -8,27 +8,26 @@ const AppNavigation = createStackNavigator(
     Workouts: {
       screen: Workouts,
       navigationOptions: {
-        headerShown: false
-      }
+        headerShown: false,
+      },
     },
     RecordWorkout: {
       screen: RecordWorkout,
       navigationOptions: {
-        title: 'Record Workout',
-        headerBackTitle: 'Cancel',
-        headerRightTitle: 'Cancel',
-        gestureEnabled: false
-      }
+        headerShown: false,
+      },
     },
     CreateWorkout: {
       screen: CreateWorkout,
-      navigationOptions: { title: 'Create Workout' }
-    }
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
   },
   {
     initialRouteName: 'Workouts',
-    headerMode: 'float'
-  }
+    headerMode: 'float',
+  },
 )
 
 export default AppNavigation

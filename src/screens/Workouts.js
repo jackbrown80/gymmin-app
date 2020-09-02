@@ -5,7 +5,7 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native'
 import appStyles from '../styles'
 import { Ionicons } from '@expo/vector-icons'
@@ -53,10 +53,12 @@ const Workouts = ({ firebase, user, navigation }) => {
           )}
         />
       )}
-      <BlueAddButton
+      <TouchableOpacity
         style={styles.add}
         onPress={() => navigation.navigate('CreateWorkout', { user })}
-      ></BlueAddButton>
+      >
+        <BlueAddButton></BlueAddButton>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -66,23 +68,32 @@ export default withFirebaseHOC(Workouts)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: appStyles.secondaryColour
+    backgroundColor: appStyles.secondaryColour,
   },
   title: {
     fontSize: 22,
     fontWeight: '700',
     color: appStyles.primaryColour,
-    paddingLeft: appStyles.leftHeaderPadding
+    paddingLeft: appStyles.leftHeaderPadding,
   },
   row: {
     marginTop: 25,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   add: {
-    alignSelf: 'center'
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: 30,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
   },
   list: {
-    paddingHorizontal: appStyles.cardPadding
-  }
+    paddingHorizontal: appStyles.cardPadding,
+  },
 })

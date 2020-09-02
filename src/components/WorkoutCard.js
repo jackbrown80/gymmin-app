@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, Alert, TouchableOpacity } from 'react-native'
 import appStyles from '../styles'
 import { AntDesign } from '@expo/vector-icons'
+import ThreeDotMenu from './ThreeDotButton'
 
 const WorkoutCard = ({ title, navigation, workoutId }) => {
   return (
@@ -13,14 +14,14 @@ const WorkoutCard = ({ title, navigation, workoutId }) => {
           [
             {
               text: 'Cancel',
-              style: 'cancel'
+              style: 'cancel',
             },
             {
               text: 'Delete',
               onPress: () => console.log('OK Pressed'),
-              style: 'destructive'
-            }
-          ]
+              style: 'destructive',
+            },
+          ],
         )
       }
       onPress={() => {
@@ -32,9 +33,7 @@ const WorkoutCard = ({ title, navigation, workoutId }) => {
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>Not yet started</Text>
         </View>
-        <View style={styles.rightWrapper}>
-          <AntDesign name="right" size={50} color="#e8e8e8" />
-        </View>
+        <View style={styles.rightWrapper}></View>
       </View>
     </TouchableOpacity>
   )
@@ -52,26 +51,29 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 0
+      height: 0,
     },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 1,
-    paddingHorizontal: appStyles.cardTitlePadding
+    paddingHorizontal: appStyles.cardTitlePadding,
   },
   title: {
     fontSize: 20,
     fontWeight: '600',
-    marginBottom: 5
+    marginBottom: 5,
   },
   subtitle: {
     fontSize: 18,
     fontWeight: 'normal',
-    color: '#333333'
+    color: '#333333',
   },
   rightWrapper: {
-    marginRight: 20
-  }
+    justifyContent: 'flex-start',
+    padding: 5,
+    marginRight: -15,
+    marginTop: -35,
+  },
 })
 
 export default WorkoutCard

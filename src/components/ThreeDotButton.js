@@ -1,10 +1,11 @@
 import * as React from 'react'
 import Svg, { Path } from 'react-native-svg'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Alert } from 'react-native'
 
 function ThreeDotMenu(props) {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={props.onPress}>
       <Svg width={27} height={24} viewBox="0 0 27 24" fill="none" {...props}>
         <Path
           fillRule="evenodd"
