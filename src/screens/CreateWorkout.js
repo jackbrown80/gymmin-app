@@ -22,8 +22,6 @@ import { withFirebaseHOC } from '../firebase'
 
 const CreateWorkout = ({ navigation }) => {
   const [exercises, setExercises] = React.useState([])
-  const [exerciseName, setExerciseName] = React.useState('')
-  const [sets, setSets] = React.useState('')
   const [completeSets, setCompleteSets] = React.useState([])
 
   let setsRef
@@ -69,110 +67,25 @@ const CreateWorkout = ({ navigation }) => {
     })
   }
 
-  const addExercise = () => {
-    const isSetsEmpty = sets === ''
-    const isNameEmpty = exerciseName === ''
-    const isBothEmpty = isSetsEmpty && isNameEmpty
-    const isInvalid = isSetsEmpty || isNameEmpty
-
-    if (isInvalid) {
-      let alertTitle = ''
-      let alertMessage = ''
-      isBothEmpty
-        ? (alertTitle = 'Details')
-        : isSetsEmpty
-        ? (alertTitle = 'Sets')
-        : (alertTitle = 'Exercise Name')
-
-      Alert.alert(
-        `Missing ${alertTitle}`,
-        'Ensure you have provide a name for the exercise and the number of sets',
-        [
-          {
-            text: 'Ok',
-            style: 'normal',
-          },
-        ],
-      )
-    } else {
-      const completeSets = {
-        sets: [],
-      }
-
-      for (let index = 0; index < sets; index++) {
-        const data = {
-          set: index + 1,
-          prevWeight: null,
-          reps: null,
-        }
-
-        completeSets.sets.push(data)
-      }
-      setExercises((prevExercises) => {
-        return [
-          {
-            id: Date.now().toString(),
-            name: exerciseName,
-            sets: { count: sets, ...completeSets },
-          },
-          ...prevExercises,
-        ]
-      })
-      setSets('')
-      setExerciseName('')
-
-      Keyboard.dismiss()
-    }
-  }
-
   return (
     <View style={styles.container}>
-      <CreateHeader></CreateHeader>
-      <View style={styles.row}>
-        <TextInput
-          style={styles.exerciseNameInput}
-          autoFocus={true}
-          placeholder="Exercise Name"
-          returnKeyType="next"
-          onSubmitEditing={() => {
-            setsRef.focus()
-          }}
-          ref={(ref) => {
-            exerciseRef = ref
-          }}
-          onChangeText={(value) => setExerciseName(value)}
-          value={exerciseName}
-        />
-        <TextInput
-          style={styles.setsInput}
-          keyboardType="number-pad"
-          placeholder="Sets"
-          ref={(ref) => {
-            setsRef = ref
-          }}
-          returnKeyType="next"
-          onChangeText={(value) => setSets(value)}
-          value={sets}
+      <CreateHeader setExercises={setExercises}></CreateHeader>
+      <View style={styles.exercises}>
+        <Text style={styles.subtitle}>Exercises</Text>
+        <FlatList
+          data={exercises}
+          renderItem={({ item }) => (
+            <ExerciseCard
+              style={styles.exerciseCard}
+              name={item.name}
+              sets={item.sets.count}
+              v
+              deleteExercise={deleteExercise}
+              id={item.id}
+            ></ExerciseCard>
+          )}
         />
       </View>
-      <TouchableOpacity style={styles.addButton} onPress={() => addExercise()}>
-        <Ionicons name="ios-add" size={40} color="black" />
-        <Text style={styles.buttonText}>Add</Text>
-      </TouchableOpacity>
-      <Text style={styles.subtitle}>Exercises</Text>
-      <FlatList
-        data={exercises}
-        renderItem={({ item }) => (
-          <ExerciseCard
-            style={styles.exerciseCard}
-            name={item.name}
-            sets={item.sets.count}
-            v
-            deleteExercise={deleteExercise}
-            id={item.id}
-          ></ExerciseCard>
-        )}
-      />
     </View>
   )
 }
@@ -185,18 +98,19 @@ const styles = StyleSheet.create({
     backgroundColor: appStyles.secondaryColour,
   },
   title: {
-    fontSize: 30,
+    fontSize: 22,
     fontWeight: '600',
     color: appStyles.tertiaryColour,
     marginTop: 10,
     marginBottom: 20,
   },
   subtitle: {
-    fontSize: 30,
+    fontSize: 22,
     fontWeight: '600',
     color: appStyles.tertiaryColour,
     marginTop: 20,
     marginBottom: 10,
+    color: 'black',
   },
   row: {
     flexDirection: 'row',
@@ -244,5 +158,8 @@ const styles = StyleSheet.create({
   setsLabel: { width: '20%', color: 'white', fontSize: 18, fontWeight: '600' },
   exerciseCard: {
     marginBottom: 15,
+  },
+  exercises: {
+    paddingHorizontal: appStyles.leftHeaderPadding,
   },
 })

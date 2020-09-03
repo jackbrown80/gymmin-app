@@ -6,10 +6,10 @@ const appStyles = {
   tertiaryColour: '#fff',
   ctaColour: '#fca311',
   primaryFontColour: '',
-  leftHeaderPadding: 35,
+  leftHeaderPadding: 25,
   cardPadding: 25,
   cardTitlePadding: 20,
-  cardHeight: 85
+  cardHeight: 85,
 }
 
 export default appStyles

@@ -25,15 +25,15 @@ export default NavSaveButton
 
 const styles = StyleSheet.create({
   container: {
-    width: 70,
+    width: 60,
     height: 40,
-    borderRadius: 13,
+    borderRadius: 10,
     backgroundColor: '#27AE60',
     alignItems: 'center',
     justifyContent: 'center',
   },
   save: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: 'white',
   },
