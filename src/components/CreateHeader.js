@@ -14,7 +14,7 @@ import NavSaveButton from './NavSaveButton'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import WhiteAddButton from './WhiteAddButton'
 
-const CreateHeader = ({ setExercises }) => {
+const CreateHeader = ({ setExercises, exercises, navigation }) => {
   const [exerciseName, setExerciseName] = React.useState('')
   const [sets, setSets] = React.useState('')
 
@@ -80,8 +80,8 @@ const CreateHeader = ({ setExercises }) => {
   return (
     <View style={styles.header}>
       <View style={styles.row}>
-        <NavBackButton></NavBackButton>
-        <NavSaveButton></NavSaveButton>
+        <NavBackButton navigation={navigation}></NavBackButton>
+        <NavSaveButton exercises={exercises}></NavSaveButton>
       </View>
       <TextInput
         style={styles.exerciseNameInput}

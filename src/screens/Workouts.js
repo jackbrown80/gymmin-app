@@ -36,9 +36,7 @@ const Workouts = ({ firebase, user, navigation }) => {
   return (
     <View style={styles.container}>
       <WorkoutHeader></WorkoutHeader>
-      <View style={styles.row}>
-        <Text style={styles.title}>Workouts</Text>
-      </View>
+      <Text style={styles.title}>Workouts</Text>
       {loading && <Text>Loading...</Text>}
       {workouts && (
         <FlatList
@@ -72,6 +70,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
+    marginTop: 20,
     fontWeight: '700',
     color: appStyles.primaryColour,
     paddingLeft: appStyles.leftHeaderPadding,

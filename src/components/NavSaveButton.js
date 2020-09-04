@@ -1,27 +1,50 @@
 import * as React from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  FlatList,
-  Keyboard,
-  Alert,
-  Button,
-  SafeAreaView,
-} from 'react-native'
-import NavBackArrow from './NavBackArrow'
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
+import { withFirebaseHOC } from '../firebase'
 
-function NavSaveButton(props) {
+const NavSaveButton = ({ exercises, firebase }) => {
+  const savePressed = () => {
+    Alert.prompt(
+      'Enter workout name',
+      `For example, "Chest & Triceps" or "Back & Biceps"`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Save',
+          onPress: (workoutName) => {
+            const workout = {
+              name: workoutName,
+              exercises: exercises,
+              created: 'TBC',
+            }
+            console.log(workout)
+            workoutRef
+              .add(workout)
+              .then((_doc) => {
+                navigation.navigate('Workouts')
+              })
+              .catch((error) => {
+                alert(error)
+              })
+          },
+        },
+      ],
+    )
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.save}>Save</Text>
-    </View>
+    <TouchableOpacity onPress={savePressed}>
+      <View style={styles.container}>
+        <Text style={styles.save}>Save</Text>
+      </View>
+    </TouchableOpacity>
   )
 }
 
-export default NavSaveButton
+export default withFirebaseHOC(NavSaveButton)
 
 const styles = StyleSheet.create({
   container: {

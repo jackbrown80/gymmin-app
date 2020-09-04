@@ -82,7 +82,16 @@ const Firebase = {
     })
 
     return sets
-  }
+  },
+
+  //TODO: Get addWorkout working
+  addWorkout: () => {
+    const ref = firebase
+      .firestore()
+      .collection('users')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('workouts').add
+  },
 }
 
 export default Firebase

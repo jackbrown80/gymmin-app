@@ -1,33 +1,12 @@
 import React from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  FlatList,
-  Keyboard,
-  Alert,
-  Button,
-  SafeAreaView,
-} from 'react-native'
-import HeaderBackButton from '@react-navigation/stack'
+import { StyleSheet, Text, View, FlatList, Alert } from 'react-native'
 import appStyles from '../styles'
-import { Ionicons } from '@expo/vector-icons'
-import { firebase } from '../firebase/config'
-import WorkoutCard from '../components/WorkoutCard'
 import CreateHeader from '../components/CreateHeader'
 import ExerciseCard from '../components/ExerciseCard'
 import { withFirebaseHOC } from '../firebase'
 
 const CreateWorkout = ({ navigation }) => {
   const [exercises, setExercises] = React.useState([])
-  const [completeSets, setCompleteSets] = React.useState([])
-
-  let setsRef
-  let exerciseRef
-
-  console.log('nav:', navigation)
 
   const savePressed = () => {
     Alert.prompt(
@@ -69,23 +48,26 @@ const CreateWorkout = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <CreateHeader setExercises={setExercises}></CreateHeader>
-      <View style={styles.exercises}>
-        <Text style={styles.subtitle}>Exercises</Text>
-        <FlatList
-          data={exercises}
-          renderItem={({ item }) => (
-            <ExerciseCard
-              style={styles.exerciseCard}
-              name={item.name}
-              sets={item.sets.count}
-              v
-              deleteExercise={deleteExercise}
-              id={item.id}
-            ></ExerciseCard>
-          )}
-        />
-      </View>
+      <CreateHeader
+        setExercises={setExercises}
+        exercises={exercises}
+        navigation={navigation}
+      ></CreateHeader>
+      <Text style={styles.title}>Exercises</Text>
+      <FlatList
+        data={exercises}
+        style={styles.list}
+        renderItem={({ item }) => (
+          <ExerciseCard
+            style={styles.exerciseCard}
+            name={item.name}
+            sets={item.sets.count}
+            v
+            deleteExercise={deleteExercise}
+            id={item.id}
+          ></ExerciseCard>
+        )}
+      />
     </View>
   )
 }
@@ -99,18 +81,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
-    color: appStyles.tertiaryColour,
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  subtitle: {
-    fontSize: 22,
-    fontWeight: '600',
-    color: appStyles.tertiaryColour,
     marginTop: 20,
-    marginBottom: 10,
-    color: 'black',
+    fontWeight: '700',
+    color: appStyles.primaryColour,
+    paddingLeft: appStyles.leftHeaderPadding,
   },
   row: {
     flexDirection: 'row',
@@ -159,7 +133,7 @@ const styles = StyleSheet.create({
   exerciseCard: {
     marginBottom: 15,
   },
-  exercises: {
-    paddingHorizontal: appStyles.leftHeaderPadding,
+  list: {
+    paddingHorizontal: appStyles.cardPadding,
   },
 })

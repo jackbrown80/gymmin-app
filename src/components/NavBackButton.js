@@ -13,11 +13,13 @@ import {
 } from 'react-native'
 import NavBackArrow from './NavBackArrow'
 
-function NavBackButton(props) {
+function NavBackButton({ navigation }) {
   return (
-    <View style={styles.container}>
-      <NavBackArrow style={styles.middle}></NavBackArrow>
-    </View>
+    <TouchableOpacity onPress={() => navigation.goBack()}>
+      <View style={styles.container}>
+        <NavBackArrow style={styles.middle}></NavBackArrow>
+      </View>
+    </TouchableOpacity>
   )
 }
 
