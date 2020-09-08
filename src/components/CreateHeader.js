@@ -47,25 +47,11 @@ const CreateHeader = ({ setExercises, exercises, navigation }) => {
         ],
       )
     } else {
-      const completeSets = {
-        sets: [],
-      }
-
-      for (let index = 0; index < sets; index++) {
-        const data = {
-          set: index + 1,
-          prevWeight: null,
-          reps: null,
-        }
-
-        completeSets.sets.push(data)
-      }
       setExercises((prevExercises) => {
         return [
           {
-            id: Date.now().toString(),
             name: exerciseName,
-            sets: { count: sets, ...completeSets },
+            sets: sets,
           },
           ...prevExercises,
         ]
@@ -81,7 +67,10 @@ const CreateHeader = ({ setExercises, exercises, navigation }) => {
     <View style={styles.header}>
       <View style={styles.row}>
         <NavBackButton navigation={navigation}></NavBackButton>
-        <NavSaveButton exercises={exercises}></NavSaveButton>
+        <NavSaveButton
+          exercises={exercises}
+          navigation={navigation}
+        ></NavSaveButton>
       </View>
       <TextInput
         style={styles.exerciseNameInput}

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
 import { withFirebaseHOC } from '../firebase'
 
-const NavSaveButton = ({ exercises, firebase }) => {
+const NavSaveButton = ({ exercises, firebase, navigation }) => {
   const savePressed = () => {
     Alert.prompt(
       'Enter workout name',
@@ -15,20 +15,8 @@ const NavSaveButton = ({ exercises, firebase }) => {
         {
           text: 'Save',
           onPress: (workoutName) => {
-            const workout = {
-              name: workoutName,
-              exercises: exercises,
-              created: 'TBC',
-            }
-            console.log(workout)
-            workoutRef
-              .add(workout)
-              .then((_doc) => {
-                navigation.navigate('Workouts')
-              })
-              .catch((error) => {
-                alert(error)
-              })
+            firebase.addWorkout(exercises, workoutName)
+            navigation.goBack()
           },
         },
       ],

@@ -6,7 +6,7 @@ import {
   Alert,
   TouchableOpacity,
   FlatList,
-  TextInput
+  TextInput,
 } from 'react-native'
 import appStyles from '../styles'
 import { withFirebaseHOC } from '../firebase'
@@ -17,7 +17,8 @@ const RecordExerciseCard = ({
   exerciseId,
   workoutId,
   setRecordedSets,
-  recordedSets
+  recordedSets,
+  item,
 }) => {
   const [loading, setLoading] = React.useState(true)
   const [sets, setSets] = React.useState(null)
@@ -32,7 +33,8 @@ const RecordExerciseCard = ({
       .catch((error) => console.error(error))
   }, [])
 
-  const recordValue = (value, id, name) => {
+  const recordValue = (value, i, name) => {
+    console.log(i)
     let prevState = { ...recordedSets }
     if (!prevState[id]) prevState[id] = {}
     prevState[id][name] = value
@@ -59,11 +61,13 @@ const RecordExerciseCard = ({
                   style={styles.reps}
                   placeholder={String(item.reps)}
                   keyboardType="number-pad"
-                  onChangeText={(value) => recordValue(value, item.id, 'reps')}
+                  onChangeText={(value) =>
+                    recordValue(value, item.setIndex, 'reps')
+                  }
                 ></TextInput>
                 <TextInput
                   style={styles.newWeight}
-                  placeholder={String(item.prevWeight)}
+                  placeholder={String(item.weight)}
                   onChangeText={(value) =>
                     recordValue(value, item.id, 'prevWeight')
                   }
@@ -83,57 +87,57 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: appStyles.tertiaryColour,
     borderRadius: 10,
+    marginTop: 25,
     shadowColor: '#000',
-    marginBottom: 20,
     shadowOffset: {
       width: 0,
-      height: 6
+      height: 0,
     },
-    shadowOpacity: 0.37,
-    shadowRadius: 7.49,
-    elevation: 12,
-    paddingHorizontal: 15,
-    paddingVertical: 10
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 1,
+    paddingHorizontal: appStyles.cardTitlePadding,
+    paddingVertical: 10,
   },
   exerciseName: {
     width: '80%',
     fontSize: 20,
     fontWeight: '500',
     color: 'black',
-    marginBottom: 10
+    marginBottom: 10,
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
   },
   header: {
     flex: 2,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   header2: {
     flex: 3,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   divider: {
     borderBottomColor: '#EEEEEE',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   setRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 9
+    marginVertical: 9,
   },
   setIndex: {
     flex: 2,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   reps: {
     flex: 2,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   newWeight: {
     flex: 3,
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 })

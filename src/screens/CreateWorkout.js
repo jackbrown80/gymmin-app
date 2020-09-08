@@ -8,38 +8,6 @@ import { withFirebaseHOC } from '../firebase'
 const CreateWorkout = ({ navigation }) => {
   const [exercises, setExercises] = React.useState([])
 
-  const savePressed = () => {
-    Alert.prompt(
-      'Enter workout name',
-      `For example, "Chest & Triceps" or "Back & Biceps"`,
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Save',
-          onPress: (workoutName) => {
-            // const timestamp = firebase.firestore.FieldValue.serverTimestamp()
-            const workout = {
-              name: workoutName,
-              exercises: exercises,
-              created: timestamp,
-            }
-            workoutRef
-              .add(workout)
-              .then((_doc) => {
-                navigation.navigate('Workouts')
-              })
-              .catch((error) => {
-                alert(error)
-              })
-          },
-        },
-      ],
-    )
-  }
-
   const deleteExercise = (id) => {
     setExercises((prevExercises) => {
       return prevExercises.filter((exercise) => exercise.id != id)
@@ -61,10 +29,8 @@ const CreateWorkout = ({ navigation }) => {
           <ExerciseCard
             style={styles.exerciseCard}
             name={item.name}
-            sets={item.sets.count}
-            v
+            sets={item.sets}
             deleteExercise={deleteExercise}
-            id={item.id}
           ></ExerciseCard>
         )}
       />

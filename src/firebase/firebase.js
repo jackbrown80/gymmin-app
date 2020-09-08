@@ -73,7 +73,7 @@ const Firebase = {
       .doc(workoutId)
       .collection('exercises')
       .doc(exerciseId)
-      .collection('setDetails')
+      .collection('set-details')
     const snapshot = await ref.get()
     const sets = []
 
@@ -81,16 +81,54 @@ const Firebase = {
       sets.push({ id: doc.id, ...doc.data() })
     })
 
-    return sets
+    return sets.sort(function (a, b) {
+      var x = a.setIndex,
+        y = b.setIndex
+
+      return x < y ? -1 : x > y ? 1 : 0
+    })
   },
 
-  //TODO: Get addWorkout working
-  addWorkout: () => {
-    const ref = firebase
+  addWorkout: async (exercises, workoutName) => {
+    const workoutRef = await firebase
       .firestore()
       .collection('users')
       .doc(firebase.auth().currentUser.uid)
-      .collection('workouts').add
+      .collection('workouts')
+      .add({
+        name: workoutName,
+      })
+
+    exercises.forEach(async (exercise) => {
+      const exerciseRef = await firebase
+        .firestore()
+        .collection('users')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('workouts')
+        .doc(workoutRef.id)
+        .collection('exercises')
+        .add({
+          name: exercise.name,
+          sets: exercise.sets,
+        })
+
+      for (let index = 0; index < exercise.sets; index++) {
+        firebase
+          .firestore()
+          .collection('users')
+          .doc(firebase.auth().currentUser.uid)
+          .collection('workouts')
+          .doc(workoutRef.id)
+          .collection('exercises')
+          .doc(exerciseRef.id)
+          .collection('set-details')
+          .add({
+            setIndex: index + 1,
+            weight: 'NA',
+            reps: 'NA',
+          })
+      }
+    })
   },
 }
 

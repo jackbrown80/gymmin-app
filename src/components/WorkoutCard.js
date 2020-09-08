@@ -25,7 +25,7 @@ const WorkoutCard = ({ title, navigation, workoutId }) => {
         )
       }
       onPress={() => {
-        navigation.navigate('RecordWorkout', { workoutId })
+        navigation.navigate('RecordWorkout', { workoutId, title })
       }}
     >
       <View style={styles.container}>
