@@ -14,14 +14,24 @@ import NavSaveButton from './NavSaveButton'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import WhiteAddButton from './WhiteAddButton'
 
-const RecordHeader = ({ setExercises, exercises, navigation }) => {
+const RecordHeader = ({
+  setExercises,
+  exercises,
+  navigation,
+  recordedWorkout,
+  workoutId,
+}) => {
+  // change save button so that it can handle saving create and record
   return (
     <View style={styles.header}>
       <View style={styles.row}>
         <NavBackButton navigation={navigation}></NavBackButton>
         <NavSaveButton
+          journey="record"
+          recordedWorkout={recordedWorkout}
           exercises={exercises}
           navigation={navigation}
+          workoutId={workoutId}
         ></NavSaveButton>
       </View>
     </View>

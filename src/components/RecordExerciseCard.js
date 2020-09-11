@@ -10,18 +10,20 @@ import {
 } from 'react-native'
 import appStyles from '../styles'
 import { withFirebaseHOC } from '../firebase'
+import SaveRecordButton from './SaveRecordButton'
 
 const RecordExerciseCard = ({
   name,
   firebase,
   exerciseId,
   workoutId,
-  setRecordedSets,
-  recordedSets,
-  item,
+  recordedWorkout,
+  setRecordedWorkout,
 }) => {
   const [loading, setLoading] = React.useState(true)
+  const [doSave, setDoSave] = React.useState(false)
   const [sets, setSets] = React.useState(null)
+  const [recordedSets, setRecordedSets] = React.useState(null)
 
   React.useEffect(() => {
     firebase
@@ -29,25 +31,35 @@ const RecordExerciseCard = ({
       .then((response) => {
         setLoading(false)
         setSets(response)
+        setRecordedSets(response)
       })
       .catch((error) => console.error(error))
   }, [])
 
   const recordValue = (value, i, name) => {
-    console.log(i)
-    let prevState = { ...recordedSets }
-    if (!prevState[id]) prevState[id] = {}
-    prevState[id][name] = value
+    let prevState = [...recordedSets]
+    prevState[i - 1][name] = value
     setRecordedSets(prevState)
   }
 
+  React.useEffect(() => {
+    if (doSave) {
+      const prevRecordedWorkout = { ...recordedWorkout }
+      prevRecordedWorkout[exerciseId] = [...recordedSets]
+      setRecordedWorkout(prevRecordedWorkout)
+    }
+  }, [doSave])
+
   return (
     <View style={styles.container}>
-      <Text style={styles.exerciseName}>{name}</Text>
+      <View style={styles.titleRow}>
+        <Text style={styles.exerciseName}>{name}</Text>
+        <SaveRecordButton setDoSave={setDoSave}></SaveRecordButton>
+      </View>
       <View style={styles.headerRow}>
         <Text style={styles.header}>Set</Text>
         <Text style={styles.header}>Reps</Text>
-        <Text style={styles.header2}>Weight</Text>
+        <Text style={styles.header}>Weight</Text>
       </View>
       {sets && (
         <FlatList
@@ -69,7 +81,7 @@ const RecordExerciseCard = ({
                   style={styles.newWeight}
                   placeholder={String(item.weight)}
                   onChangeText={(value) =>
-                    recordValue(value, item.id, 'prevWeight')
+                    recordValue(value, item.setIndex, 'weight')
                   }
                 ></TextInput>
               </View>
@@ -100,23 +112,23 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   exerciseName: {
-    width: '80%',
-    fontSize: 20,
-    fontWeight: '500',
-    color: 'black',
-    marginBottom: 10,
+    fontSize: 18,
+    fontWeight: '600',
+    color: appStyles.primaryColour,
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
   },
-  header: {
-    flex: 2,
-    textAlign: 'center',
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
-  header2: {
-    flex: 3,
+  header: {
+    flex: 1,
     textAlign: 'center',
   },
   divider: {
@@ -129,15 +141,28 @@ const styles = StyleSheet.create({
     marginVertical: 9,
   },
   setIndex: {
-    flex: 2,
+    flex: 1,
     textAlign: 'center',
   },
   reps: {
-    flex: 2,
+    flex: 1,
     textAlign: 'center',
   },
   newWeight: {
-    flex: 3,
+    flex: 1,
     textAlign: 'center',
+  },
+  completeButton: {
+    width: 50,
+    height: 25,
+    borderRadius: 10,
+    backgroundColor: '#27AE60',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: 'white',
   },
 })

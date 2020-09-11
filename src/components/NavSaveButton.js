@@ -2,25 +2,42 @@ import * as React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
 import { withFirebaseHOC } from '../firebase'
 
-const NavSaveButton = ({ exercises, firebase, navigation }) => {
+const NavSaveButton = ({
+  journey,
+  exercises,
+  recordedWorkout = {},
+  firebase,
+  navigation,
+  workoutId,
+}) => {
   const savePressed = () => {
-    Alert.prompt(
-      'Enter workout name',
-      `For example, "Chest & Triceps" or "Back & Biceps"`,
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Save',
-          onPress: (workoutName) => {
-            firebase.addWorkout(exercises, workoutName)
-            navigation.goBack()
+    if (journey == 'record') {
+      const exerciseKeys = exercises.map((exercise) => exercise.id)
+      const recordedKeys = Object.keys(recordedWorkout)
+
+      if (exerciseKeys.length == recordedKeys.length) {
+        firebase.recordWorkout(recordedWorkout, workoutId)
+        navigation.goBack()
+      }
+    } else {
+      Alert.prompt(
+        'Enter workout name',
+        `For example, "Chest & Triceps" or "Back & Biceps"`,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
           },
-        },
-      ],
-    )
+          {
+            text: 'Save',
+            onPress: (workoutName) => {
+              firebase.addWorkout(exercises, workoutName)
+              navigation.goBack()
+            },
+          },
+        ],
+      )
+    }
   }
 
   return (
@@ -36,7 +53,7 @@ export default withFirebaseHOC(NavSaveButton)
 
 const styles = StyleSheet.create({
   container: {
-    width: 60,
+    width: 65,
     height: 40,
     borderRadius: 10,
     backgroundColor: '#27AE60',

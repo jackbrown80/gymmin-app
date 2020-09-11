@@ -26,7 +26,7 @@ const RecordWorkout = ({ firebase, navigation }) => {
 
   const [loading, setLoading] = React.useState(true)
   const [exercises, setExercises] = React.useState(null)
-  const [recordedSets, setRecordedSets] = React.useState({})
+  const [recordedWorkout, setRecordedWorkout] = React.useState({})
 
   React.useEffect(() => {
     firebase
@@ -38,9 +38,16 @@ const RecordWorkout = ({ firebase, navigation }) => {
       .catch((error) => console.error(error))
   }, [])
 
+  React.useEffect(() => {}, [recordedWorkout])
+
   return (
     <View style={styles.container}>
-      <RecordHeader navigation={navigation}></RecordHeader>
+      <RecordHeader
+        navigation={navigation}
+        exercises={exercises}
+        recordedWorkout={recordedWorkout}
+        workoutId={workoutId}
+      ></RecordHeader>
       <Text style={styles.title}>{title}</Text>
       {exercises ? (
         <FlatList
@@ -54,8 +61,8 @@ const RecordWorkout = ({ firebase, navigation }) => {
                 exerciseId={item.id}
                 name={item.name}
                 item={item}
-                setRecordedSets={setRecordedSets}
-                recordedSets={recordedSets}
+                setRecordedWorkout={setRecordedWorkout}
+                recordedWorkout={recordedWorkout}
               ></RecordExerciseCard>
             )
           }}

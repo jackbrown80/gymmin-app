@@ -130,6 +130,28 @@ const Firebase = {
       }
     })
   },
+
+  recordWorkout: (recordedWorkout, workoutId) => {
+    Object.keys(recordedWorkout).forEach((exerciseId) => {
+      const setDetails = recordedWorkout[exerciseId]
+      setDetails.forEach((set) => {
+        const ref = firebase
+          .firestore()
+          .collection('users')
+          .doc(firebase.auth().currentUser.uid)
+          .collection('workouts')
+          .doc(workoutId)
+          .collection('exercises')
+          .doc(exerciseId)
+          .collection('set-details')
+          .doc(set.id)
+          .update({
+            reps: set.reps,
+            weight: set.weight,
+          })
+      })
+    })
+  },
 }
 
 export default Firebase
