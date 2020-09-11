@@ -6,76 +6,82 @@ import {
   Alert,
   TouchableOpacity,
   FlatList,
-  TextInput
+  TextInput,
 } from 'react-native'
 import appStyles from '../styles'
+import { withFirebaseHOC } from '../firebase'
+import SaveRecordButton from './SaveRecordButton'
 
 const RecordExerciseCard = ({
   name,
-  sets,
-  index,
-  setNewExercises,
-  exercises
+  firebase,
+  exerciseId,
+  workoutId,
+  recordedWorkout,
+  setRecordedWorkout,
 }) => {
-  const refObj = {}
-  const { sets: setsArr } = sets
-  const [newSetsArr, setNewSetsArr] = React.useState(setsArr)
-  console.log('-----------2-------------')
-  console.log(sets)
+  const [loading, setLoading] = React.useState(true)
+  const [doSave, setDoSave] = React.useState(false)
+  const [sets, setSets] = React.useState(null)
+  const [recordedSets, setRecordedSets] = React.useState(null)
 
-  setsArr.forEach((key) => {
-    refObj[`reps${key.set}`] = null
-    refObj[`weight${key.set}`] = null
-  })
+  React.useEffect(() => {
+    firebase
+      .getSetsByWorkoutIdAndExerciseId(workoutId, exerciseId)
+      .then((response) => {
+        setLoading(false)
+        setSets(response)
+        setRecordedSets(response)
+      })
+      .catch((error) => console.error(error))
+  }, [])
 
-  const recordValue = (value, set, name) => {
-    const i = set - 1
-    let prevNewSetsArr = [...newSetsArr]
-    prevNewSetsArr[i][name] = value
-    setNewSetsArr(prevNewSetsArr)
+  const recordValue = (value, i, name) => {
+    let prevState = [...recordedSets]
+    prevState[i - 1][name] = value
+    setRecordedSets(prevState)
   }
 
   React.useEffect(() => {
-    if (exercises) {
-      let prevExercises = [...exercises]
-      // console.log('here------------------------')
-      // console.log(index)
-      // console.log(prevExercises)
-      // prevExercises[index].sets = newSetsArr
-      // setNewExercises(prevExercises)
+    if (doSave) {
+      const prevRecordedWorkout = { ...recordedWorkout }
+      prevRecordedWorkout[exerciseId] = [...recordedSets]
+      setRecordedWorkout(prevRecordedWorkout)
     }
-  })
+  }, [doSave])
 
   return (
     <View style={styles.container}>
-      <Text style={styles.exerciseName}>{name}</Text>
+      <View style={styles.titleRow}>
+        <Text style={styles.exerciseName}>{name}</Text>
+        <SaveRecordButton setDoSave={setDoSave}></SaveRecordButton>
+      </View>
       <View style={styles.headerRow}>
         <Text style={styles.header}>Set</Text>
         <Text style={styles.header}>Reps</Text>
-        <Text style={styles.header2}>Weight</Text>
+        <Text style={styles.header}>Weight</Text>
       </View>
-      {setsArr && (
+      {sets && (
         <FlatList
-          data={setsArr}
+          data={sets}
           renderItem={({ item }) => (
-            <View key={item.set} style={styles.setContainer}>
+            <View key={item.setIndex} style={styles.setContainer}>
               <View style={styles.divider}></View>
               <View style={styles.setRow}>
-                <Text style={styles.setIndex}>{item.set}</Text>
+                <Text style={styles.setIndex}>{item.setIndex}</Text>
                 <TextInput
                   style={styles.reps}
-                  placeholder={!sets.reps ? 'NA' : sets.reps}
+                  placeholder={String(item.reps)}
                   keyboardType="number-pad"
-                  ref={(ref) => {
-                    refObj[`reps${item.set}`] = ref
-                  }}
-                  onChangeText={(value) => recordValue(value, item.set, 'reps')}
+                  onChangeText={(value) =>
+                    recordValue(value, item.setIndex, 'reps')
+                  }
                 ></TextInput>
                 <TextInput
                   style={styles.newWeight}
-                  placeholder={!sets.prevWeight ? 'NA' : sets.prevWeight}
+                  placeholder={String(item.weight)}
                   onChangeText={(value) =>
-                    recordValue(value, item.set, 'prevWeight')
+                    recordValue(value, item.setIndex, 'weight')
                   }
                 ></TextInput>
               </View>
@@ -87,63 +93,76 @@ const RecordExerciseCard = ({
   )
 }
 
+export default withFirebaseHOC(RecordExerciseCard)
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: appStyles.secondaryColour,
+    backgroundColor: appStyles.tertiaryColour,
     borderRadius: 10,
+    marginTop: 25,
     shadowColor: '#000',
-    marginBottom: 20,
     shadowOffset: {
       width: 0,
-      height: 6
+      height: 0,
     },
-    shadowOpacity: 0.37,
-    shadowRadius: 7.49,
-    elevation: 12,
-    paddingHorizontal: 15,
-    paddingVertical: 10
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 1,
+    paddingHorizontal: appStyles.cardTitlePadding,
+    paddingVertical: 10,
   },
   exerciseName: {
-    width: '80%',
-    fontSize: 20,
-    fontWeight: '500',
-    color: 'black',
-    marginBottom: 10
+    fontSize: 18,
+    fontWeight: '600',
+    color: appStyles.primaryColour,
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   header: {
-    flex: 2,
-    textAlign: 'center'
-  },
-  header2: {
-    flex: 3,
-    textAlign: 'center'
+    flex: 1,
+    textAlign: 'center',
   },
   divider: {
     borderBottomColor: '#EEEEEE',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   setRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 9
+    marginVertical: 9,
   },
   setIndex: {
-    flex: 2,
-    textAlign: 'center'
+    flex: 1,
+    textAlign: 'center',
   },
   reps: {
-    flex: 2,
-    textAlign: 'center'
+    flex: 1,
+    textAlign: 'center',
   },
   newWeight: {
-    flex: 3,
-    textAlign: 'center'
-  }
+    flex: 1,
+    textAlign: 'center',
+  },
+  completeButton: {
+    width: 50,
+    height: 25,
+    borderRadius: 10,
+    backgroundColor: '#27AE60',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: 'white',
+  },
 })
-
-export default RecordExerciseCard

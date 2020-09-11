@@ -9,7 +9,7 @@ import {
   Keyboard,
   ScrollView,
   Button,
-  AsyncStorage
+  AsyncStorage,
 } from 'react-native'
 import HeaderBackButton from '@react-navigation/stack'
 import appStyles from '../styles'
@@ -17,43 +17,52 @@ import { Ionicons } from '@expo/vector-icons'
 import { firebase } from '../firebase/config'
 import WorkoutCard from '../components/WorkoutCard'
 import RecordExerciseCard from '../components/RecordExerciseCard'
+import { withFirebaseHOC } from '../firebase'
+import RecordHeader from '../components/RecordHeader'
 
-export default RecordWorkoutScreen = ({ user, navigation, route }) => {
-  const { workout } = route.params
-  const { exercises } = workout
-  const [newExercises, setNewExercises] = React.useState(exercises)
+const RecordWorkout = ({ firebase, navigation }) => {
+  const { workoutId } = navigation.state.params
+  const { title } = navigation.state.params
+
+  const [loading, setLoading] = React.useState(true)
+  const [exercises, setExercises] = React.useState(null)
+  const [recordedWorkout, setRecordedWorkout] = React.useState({})
 
   React.useEffect(() => {
-    navigation.setOptions({
-      title: 'Record Workout',
-      headerStyle: {
-        backgroundColor: appStyles.primaryColour,
-        elevation: 0,
-        shadowOpacity: 0
-      },
-      headerTintColor: '#fff',
-      headerRight: () => <Button onPress={() => savePressed()} title="Save" />
-    })
-  })
+    firebase
+      .getExercisesByWorkoutId(workoutId)
+      .then((response) => {
+        setLoading(false)
+        setExercises(response)
+      })
+      .catch((error) => console.error(error))
+  }, [])
 
-  let index = 0
+  React.useEffect(() => {}, [recordedWorkout])
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{workout.name}</Text>
+      <RecordHeader
+        navigation={navigation}
+        exercises={exercises}
+        recordedWorkout={recordedWorkout}
+        workoutId={workoutId}
+      ></RecordHeader>
+      <Text style={styles.title}>{title}</Text>
       {exercises ? (
         <FlatList
           data={exercises}
+          style={styles.list}
           renderItem={({ item }) => {
             return (
               <RecordExerciseCard
                 key={item.id}
-                id={item.id}
-                index={index++}
+                workoutId={workoutId}
+                exerciseId={item.id}
                 name={item.name}
-                sets={item.sets}
-                exercises={exercises}
-                setNewExercises={setNewExercises}
+                item={item}
+                setRecordedWorkout={setRecordedWorkout}
+                recordedWorkout={recordedWorkout}
               ></RecordExerciseCard>
             )
           }}
@@ -61,49 +70,34 @@ export default RecordWorkoutScreen = ({ user, navigation, route }) => {
       ) : (
         <Text>Loading...</Text>
       )}
-      <FlatList
-        data={exercises}
-        renderItem={({ item }) => {
-          return (
-            <RecordExerciseCard
-              key={item.id}
-              id={item.id}
-              index={index++}
-              name={item.name}
-              sets={item.sets}
-              exercises={exercises}
-              setNewExercises={setNewExercises}
-            ></RecordExerciseCard>
-          )
-        }}
-      />
     </View>
   )
 }
 
+export default withFirebaseHOC(RecordWorkout)
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: appStyles.primaryColour,
-    paddingHorizontal: 16
+    backgroundColor: appStyles.secondaryColour,
   },
   title: {
-    fontSize: 30,
-    fontWeight: '600',
-    color: appStyles.secondaryColour,
-    marginTop: 10,
-    marginBottom: 20
+    fontSize: 22,
+    marginTop: 20,
+    fontWeight: '700',
+    color: appStyles.primaryColour,
+    paddingLeft: appStyles.leftHeaderPadding,
   },
   subtitle: {
     fontSize: 30,
     fontWeight: '600',
-    color: appStyles.secondaryColour,
+    color: appStyles.tertiaryColour,
     marginTop: 20,
-    marginBottom: 10
+    marginBottom: 10,
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   exerciseNameInput: {
     height: 40,
@@ -111,7 +105,7 @@ const styles = StyleSheet.create({
     width: '75%',
     borderRadius: 5,
     fontSize: 20,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   setsInput: {
     height: 40,
@@ -120,7 +114,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     textAlign: 'center',
-    fontSize: 20
+    fontSize: 20,
   },
   addButton: {
     marginTop: 10,
@@ -130,22 +124,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'stretch',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonText: {
     textAlign: 'center',
     fontSize: 23,
     fontWeight: '700',
-    marginLeft: 10
+    marginLeft: 10,
   },
   exerciseNameLabel: {
     width: '75%',
     color: 'white',
     fontSize: 18,
-    fontWeight: '600'
+    fontWeight: '600',
   },
   setsLabel: { width: '20%', color: 'white', fontSize: 18, fontWeight: '600' },
   exerciseCard: {
-    marginBottom: 15
-  }
+    marginBottom: 15,
+  },
+  list: {
+    paddingHorizontal: appStyles.cardPadding,
+  },
 })

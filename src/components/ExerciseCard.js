@@ -19,7 +19,7 @@ const ExerciseCard = ({ name, sets, deleteExercise, id }) => {
               onPress: () => deleteExercise(id),
               style: 'destructive',
             },
-          ]
+          ],
         )
       }
     >
@@ -37,28 +37,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: appStyles.secondaryColour,
+    marginTop: 25,
+    backgroundColor: appStyles.tertiaryColour,
     borderRadius: 10,
     height: 70,
     shadowColor: '#000',
-    marginBottom: 20,
     shadowOffset: {
       width: 0,
-      height: 6,
+      height: 0,
     },
-    shadowOpacity: 0.37,
-    shadowRadius: 7.49,
-    elevation: 12,
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 1,
     paddingHorizontal: 15,
   },
   exerciseName: {
-    width: '80%',
+    width: '70%',
     fontSize: 20,
     fontWeight: '500',
     color: '#333333',
   },
   sets: {
-    width: '20%',
+    width: '30%',
     fontSize: 20,
     fontWeight: '500',
     color: '#333333',

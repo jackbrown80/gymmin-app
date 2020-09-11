@@ -4,7 +4,7 @@ import Logo from '../components/Logo'
 import WelcomeModal from '../components/WelcomeModal'
 import appStyles from '../styles'
 
-export default WelcomeScreen = ({ navigation }) => {
+export default Welcome = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.bottom}>
